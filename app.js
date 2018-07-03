@@ -2,87 +2,163 @@ var app  = require('express')()
 var bodyParser  = require('body-parser');
 var cors = require('cors');
 var busboy = require('connect-busboy');
-
-
-
-var secret = 'aT42dfdf46GDh6fdp09hmgd35FdsDe';
+var mysql = require('mysql');
 
 //bodyparser needs
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+//bodyParse/Cors/Busboy
 app.use(bodyParser.json({ extended: true }));
 app.use(cors());
 app.use(busboy()); 
 
+//database
+var pool  = mysql.createPool({
+	connectionLimit : 20,
+	host     : 'g8mh6ge01lu2z3n1.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+	port : '3306',
+	user     : 'ghy6trmydb22z0e2',
+	password : 'ife8u8clqe0rjd74',
+	database: 'ay7h56yxux99uzop'
+  });
 
 app.use(function(err, req, res, next) {
   next(err);
 });
 
-//AllNews
-app.get('/getAllNews', function(req, res) {	
-	var news = [
-				{titulo: 'Novidade', descricao: 'Pequena descrição 1', data_criacao: '29/04/2018', url_imagens: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_videos: [], url_links: ['www.equipepancho.com','www.equipepancho.com']},
-				{titulo: 'Novidade', descricao: 'Pequena descrição 2', data_criacao: '10/12/2018', url_imagens: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: ['www.equipepancho.com','www.equipepancho.com']},
-				{titulo: 'Novidade', descricao: 'Pequena descrição 3', data_criacao: '05/05/2018', url_imagens: [], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: []}
-				];	
-	return 	res.json(events);
+//Inicio das Rotas
+//getId: Retorna o Id da token de instalacao
+app.post('/getId', function(req, res) {
+	pool.getConnection(function(err, connection) {
+		var string = 'select * from usuario where token = "'+req.body.token+'"';
+		console.log(string);
+		connection.query(string , function(err, data) {
+		if (err){
+				var error = {};
+				error.type = 1;
+				error.msg = err;
+				connection.release();
+				return res.jsonp(error);
+			}
+			connection.release();
+			return res.jsonp(data);
+		});
+	});	
 });
 
-//AllEnquetes
+//getAllMsgs: Busca todas as mensagens
+app.get('/getAllMsgs', function(req, res) {	
+	pool.getConnection(function(err, connection) {	
+		var string = 'select * from mensagem';		
+		connection.query(string, function(err, data) {
+			if (err){
+				var error = {};
+				error.type = 1;
+				error.msg = err;
+				connection.release();
+				return res.jsonp(error);
+			}	
+			connection.release();
+			return res.jsonp(data);
+		});
+	});
+});
+
+//getAllEnquetes: Busca todas as enquetes
 app.get('/getAllEnquetes', function(req, res) {	
-	var events = [
-				{titulo: 'Evento', descricao: 'Pequena descrição 1', data_inicio: '29/04/2018', data_fim: '30/04/2018', localizacao: 'Montevideo', valor: '100,00 reais', url_imagens: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: ['www.equipepancho.com']},
-				{titulo: 'Evento', descricao: 'Pequena descrição 2', data_inicio: '10/12/2018', data_fim: '11/12/2018', localizacao: 'Limeira', valor: '100,50 reais', url_imagens: [], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: ['www.equipepancho.com','www.equipepancho.com']},
-				{titulo: 'Evento', descricao: 'Pequena descrição 3', data_inicio: '05/05/2018', data_fim: '06/05/2018', localizacao: 'Campinas', valor: '35,00', url_imagens: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: []}
-				];
-	return 	res.json(events);
+	pool.getConnection(function(err, connection) {	
+		var string = 'select * from enquete';
+		connection.query(string, function(err, data) {
+			if (err){
+				var error = {};
+				error.type = 1;
+				error.msg = err;
+				connection.release();
+				return res.jsonp(error);
+			}	
+			connection.release();
+			return res.jsonp(data);
+		});
+	});
 });
 
-//ReadMsgs
-app.get('/readMsg', function(req, res) {	
-	var events = [
-				{titulo: 'Evento', descricao: 'Pequena descrição 1', data_inicio: '29/04/2018', data_fim: '30/04/2018', localizacao: 'Montevideo', valor: '100,00 reais', url_imagens: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: ['www.equipepancho.com']},
-				{titulo: 'Evento', descricao: 'Pequena descrição 2', data_inicio: '10/12/2018', data_fim: '11/12/2018', localizacao: 'Limeira', valor: '100,50 reais', url_imagens: [], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: ['www.equipepancho.com','www.equipepancho.com']},
-				{titulo: 'Evento', descricao: 'Pequena descrição 3', data_inicio: '05/05/2018', data_fim: '06/05/2018', localizacao: 'Campinas', valor: '35,00', url_imagens: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: []}
-				];	
-	return res.json(events);
+//readMsg: Atualiza a mensagem como lida
+app.post('/readMsg', function(req, res) {
+	pool.getConnection(function(err, connection) {
+		var string = 'insert into mensagem_x_usuario(id_usuario, id_mensagem) values('+req.body.id_usuario+','+req.body.id_mensagem+')';
+		console.log(string);
+		connection.query(string , function(err, data) {
+		if (err){
+				var error = {};
+				error.type = 1;
+				error.msg = err;
+				connection.release();
+				return res.jsonp(error);
+			}
+			connection.release();
+			return res.jsonp("Mensagem_x_usuario Criada com sucesso");
+		});
+	});	
 });
 
-app.get('/replayPoll', function(req, res) {	
-	var events = [
-				{titulo: 'Evento', descricao: 'Pequena descrição 1', data_inicio: '29/04/2018', data_fim: '30/04/2018', localizacao: 'Montevideo', valor: '100,00 reais', url_imagens: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: ['www.equipepancho.com']},
-				{titulo: 'Evento', descricao: 'Pequena descrição 2', data_inicio: '10/12/2018', data_fim: '11/12/2018', localizacao: 'Limeira', valor: '100,50 reais', url_imagens: [], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: ['www.equipepancho.com','www.equipepancho.com']},
-				{titulo: 'Evento', descricao: 'Pequena descrição 3', data_inicio: '05/05/2018', data_fim: '06/05/2018', localizacao: 'Campinas', valor: '35,00', url_imagens: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: []}
-				];
-    return res.json(events);
+//replayPoll: Atualiza a enquete com a resposta
+app.post('/replayPoll', function(req, res) {
+	pool.getConnection(function(err, connection) {
+		var string = 'insert into enquete_x_usuario(id_usuario, id_enquete, resposta) values('+req.body.id_usuario+','+req.body.id_enquete+','+req.body.resposta+')';
+		console.log(string);
+		connection.query(string , function(err, data) {
+		if (err){
+				var error = {};
+				error.type = 1;
+				error.msg = err;
+				connection.release();
+				return res.jsonp(error);
+			}
+			connection.release();
+			return res.jsonp("Mensagem_x_enquete Criada com sucesso");
+		});
+	});	
 });
 
-app.get('/newPoll', function(req, res) {	
-	var events = [
-				{titulo: 'Evento', descricao: 'Pequena descrição 1', data_inicio: '29/04/2018', data_fim: '30/04/2018', localizacao: 'Montevideo', valor: '100,00 reais', url_imagens: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: ['www.equipepancho.com']},
-				{titulo: 'Evento', descricao: 'Pequena descrição 2', data_inicio: '10/12/2018', data_fim: '11/12/2018', localizacao: 'Limeira', valor: '100,50 reais', url_imagens: [], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: ['www.equipepancho.com','www.equipepancho.com']},
-				{titulo: 'Evento', descricao: 'Pequena descrição 3', data_inicio: '05/05/2018', data_fim: '06/05/2018', localizacao: 'Campinas', valor: '35,00', url_imagens: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: []}
-				];	
-	
-    return res.json(events);;
+//newPoll: Cria Nova Enquete
+app.post('/newPoll', function(req, res) {
+	pool.getConnection(function(err, connection) {
+		var string = 'insert into enquete(descricao,data_criacao,data_fim,opcao_1,opcao_2,opcao_3,opcao_4) values("'+req.body.descricao+'",now(),now(),"'+req.body.opcao_1+'","'+req.body.opcao_2+'","'+req.body.opcao_3+'","'+req.body.opcao_4+'")';
+		console.log(string);
+		connection.query(string , function(err, data) {
+		if (err){
+				var error = {};
+				error.type = 1;
+				error.msg = err;
+				connection.release();
+				return res.jsonp(error);
+			}
+			connection.release();
+			return res.jsonp("Enquete Criada com sucesso");
+		});
+	});	
 });
 
-app.get('/newMsg', function(req, res) {	
-	var events = [
-				{titulo: 'Evento', descricao: 'Pequena descrição 1', data_inicio: '29/04/2018', data_fim: '30/04/2018', localizacao: 'Montevideo', valor: '100,00 reais', url_imagens: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: ['www.equipepancho.com']},
-				{titulo: 'Evento', descricao: 'Pequena descrição 2', data_inicio: '10/12/2018', data_fim: '11/12/2018', localizacao: 'Limeira', valor: '100,50 reais', url_imagens: [], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: ['www.equipepancho.com','www.equipepancho.com']},
-				{titulo: 'Evento', descricao: 'Pequena descrição 3', data_inicio: '05/05/2018', data_fim: '06/05/2018', localizacao: 'Campinas', valor: '35,00', url_imagens: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_videos: ['http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg','http://hortonhighschool.ca/wp-content/uploads/2017/10/News.jpg'], url_links: []}
-				];	
-	return res.json(events);	
+//newMsg: Cria Nova Mensagem
+app.post('/newMsg', function(req, res) {
+	pool.getConnection(function(err, connection) {
+		var string = 'insert into mensagem(descricao,data_criacao,data_evento,on_fire) values("'+req.body.descricao+'",now(),now(),'+req.body.on_fire+')';
+		console.log(string);		
+		connection.query(string , function(err, data) {
+		if (err){
+				var error = {};
+				error.type = 1;
+				error.msg = err;
+				connection.release();
+				return res.jsonp(error);
+			}
+			connection.release();
+			return res.jsonp("Mensagem Criada com sucesso");
+		});
+	});	
 });
-
-
-//configuracao para aws
-//var port = 9002;
-//app.listen(port);
 
 //configuracao para o heroku
 app.listen(process.env.PORT || 5000)
