@@ -87,4 +87,4 @@ app.get('/newMsg', function(req, res) {
 //configuracao para o heroku
 app.listen(process.env.PORT || 5000)
 
-console.log('Listening');
+console.log('Listening')
