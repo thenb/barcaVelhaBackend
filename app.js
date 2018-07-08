@@ -45,7 +45,7 @@ app.post('/getId', function(req, res) {
 			//adiciona o id novo se ja nao existir
 			if (data === 'undefined'|| data.length == 0){				
 				var string1 = 'insert into usuario(token) values("'+req.body.token+'")';
-				console.log(string1);
+				console.log(string);
 				connection.query(string1 , function(err, data1) {
 					if (err){
 						var error = {};
@@ -54,11 +54,13 @@ app.post('/getId', function(req, res) {
 						connection.release();
 						return res.jsonp(error);
 					}
+					console.log(data1)
 					connection.release();
 					return res.jsonp(data1);
 				});
 			//ja existe, retorna o usuario completo
 			}else{
+				console.log(data)
 				connection.release();
 				return res.jsonp(data);
 			}			
