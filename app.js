@@ -31,20 +31,36 @@ app.use(function(err, req, res, next) {
 //Inicio das Rotas
 //getId: Retorna o Id da token de instalacao
 app.post('/getId', function(req, res) {
-	pool.getConnection(function(err, connection) {
-		console.log(req.body.token);
+	pool.getConnection(function(err, connection) {		
 		var string = 'select * from usuario where token = "'+req.body.token+'"';
 		console.log(string);
 		connection.query(string , function(err, data) {
-		if (err){
+			if (err){
 				var error = {};
 				error.type = 1;
 				error.msg = err;
 				connection.release();
 				return res.jsonp(error);
 			}
-			connection.release();
-			return res.jsonp(data);
+			//adiciona o id novo se ja nao existir
+			if (data === 'undefined'|| data.length == 0){				
+				var string1 = 'insert into usuario(token) values('+req.body.token+')';
+				connection.query(string1 , function(err, data1) {
+					if (err){
+						var error = {};
+						error.type = 1;
+						error.msg = err;
+						connection.release();
+						return res.jsonp(error);
+					}
+					connection.release();
+					return res.jsonp(data1);
+				});
+			//ja existe, retorna o usuario completo
+			}else{
+				connection.release();
+				return res.jsonp(data);
+			}			
 		});
 	});	
 });
