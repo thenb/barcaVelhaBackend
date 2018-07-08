@@ -32,6 +32,7 @@ app.use(function(err, req, res, next) {
 //getId: Retorna o Id da token de instalacao
 app.post('/getId', function(req, res) {
 	pool.getConnection(function(err, connection) {
+		console.log(req.body.token);
 		var string = 'select * from usuario where token = "'+req.body.token+'"';
 		console.log(string);
 		connection.query(string , function(err, data) {
