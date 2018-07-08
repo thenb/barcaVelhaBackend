@@ -56,14 +56,14 @@ app.post('/getId', function(req, res) {
 					}
 					console.log(data1)
 					connection.release();
-					return res.json({ token: data1[0].token });
+					return res.json(data1[0].token);
 					//return res.jsonp(data1.token);
 				});
 			//ja existe, retorna o usuario completo
 			}else{
 				console.log(data)
 				connection.release();
-				return res.json({ token: data[0].token });
+				return res.json(data[0].token);
 			}			
 		});
 	});	
