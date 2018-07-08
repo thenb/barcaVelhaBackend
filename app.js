@@ -63,7 +63,7 @@ app.post('/getId', function(req, res) {
 			}else{
 				console.log(data)
 				connection.release();
-				return res.json(data[0].token);
+				return res.json(data[0]);
 			}			
 		});
 	});	
