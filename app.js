@@ -139,7 +139,7 @@ app.post('/replayPoll', function(req, res) {
 				return res.jsonp(error);
 			}
 			connection.release();
-			return res.jsonp("Mensagem_x_enquete Criada com sucesso");
+			return res.jsonp("Enquete Respondida com sucesso");
 		});
 	});	
 });
