@@ -90,7 +90,7 @@ app.get('/getAllMsgs', function(req, res) {
 //getAllEnquetes: Busca todas as enquetes
 app.post('/getAllEnquetes', function(req, res) {	
 	pool.getConnection(function(err, connection) {	
-		var string = 'SELECT * FROM enquete LEFT JOIN enquete_x_usuario ON enquete.id = enquete_x_usuario.id_enquete where enquete_x_usuario.id_enquete is null or enquete_x_usuario.id_usuario = '+req.body.id_usuario+' UNION SELECT * FROM enquete RIGHT JOIN enquete_x_usuario ON enquete.id = enquete_x_usuario.id_enquete where enquete_x_usuario.id_enquete is null or enquete_x_usuario.id_usuario = '+req.body.id_usuario;
+		var string = 'SELECT s.* FROM (SELECT * FROM enquete LEFT JOIN enquete_x_usuario  ON enquete.id = enquete_x_usuario.id_enquete where enquete_x_usuario.id_enquete is null or enquete_x_usuario.id_usuario = '+req.body.id_usuario+' UNION SELECT * FROM enquete RIGHT JOIN enquete_x_usuario ON enquete.id = enquete_x_usuario.id_enquete where enquete_x_usuario.id_enquete is null or enquete_x_usuario.id_usuario = '+req.body.id_usuario+' ) s ORDER BY s.respondido asc';
 		console.log(string);
 		connection.query(string, function(err, data) {
 			if (err){
