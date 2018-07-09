@@ -147,6 +147,19 @@ app.post('/replayPoll', function(req, res) {
 //newPoll: Cria Nova Enquete
 app.post('/newPoll', function(req, res) {
 	pool.getConnection(function(err, connection) {
+		if(req.body.opcao_1==""){
+			req.body.opcao_1 = null;
+		}
+		if(req.body.opcao_2==""){
+			req.body.opcao_2 = null;
+		}
+		if(req.body.opcao_3==""){
+			req.body.opcao_3 = null;
+		}
+		if(req.body.opcao_4==""){
+			req.body.opcao_4 = null;
+		}
+		
 		var string = 'insert into enquete(descricao,data_criacao,data_fim,opcao_1,opcao_2,opcao_3,opcao_4) values("'+req.body.descricao+'",now(),"'+req.body.data_fim+'","'+req.body.opcao_1+'","'+req.body.opcao_2+'","'+req.body.opcao_3+'","'+req.body.opcao_4+'")';
 		console.log(string);
 		connection.query(string , function(err, data) {
