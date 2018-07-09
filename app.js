@@ -128,7 +128,7 @@ app.post('/readMsg', function(req, res) {
 //replayPoll: Atualiza a enquete com a resposta
 app.post('/replayPoll', function(req, res) {
 	pool.getConnection(function(err, connection) {
-		var string = 'insert into enquete_x_usuario(id_usuario, id_enquete, resposta) values('+req.body.id_usuario+','+req.body.id_enquete+','+req.body.resposta+')';
+		var string = 'insert into enquete_x_usuario(id_usuario, id_enquete, resposta, respondido) values('+req.body.id_usuario+','+req.body.id_enquete+','+req.body.resposta+',true)';
 		console.log(string);
 		connection.query(string , function(err, data) {
 		if (err){
