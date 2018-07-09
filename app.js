@@ -147,7 +147,7 @@ app.post('/replayPoll', function(req, res) {
 //newPoll: Cria Nova Enquete
 app.post('/newPoll', function(req, res) {
 	pool.getConnection(function(err, connection) {
-		var string = 'insert into enquete(descricao,data_criacao,data_fim,opcao_1,opcao_2,opcao_3,opcao_4) values("'+req.body.descricao+'",'+req.body.data_criacao+','+req.body.data_fim+',"'+req.body.opcao_1+'","'+req.body.opcao_2+'","'+req.body.opcao_3+'","'+req.body.opcao_4+'")';
+		var string = 'insert into enquete(descricao,data_criacao,data_fim,opcao_1,opcao_2,opcao_3,opcao_4) values("'+req.body.descricao+'",now(),'+req.body.data_fim+',"'+req.body.opcao_1+'","'+req.body.opcao_2+'","'+req.body.opcao_3+'","'+req.body.opcao_4+'")';
 		console.log(string);
 		connection.query(string , function(err, data) {
 		if (err){
@@ -166,7 +166,7 @@ app.post('/newPoll', function(req, res) {
 //newMsg: Cria Nova Mensagem
 app.post('/newMsg', function(req, res) {
 	pool.getConnection(function(err, connection) {
-		var string = 'insert into mensagem(descricao,data_criacao,data_evento,on_fire) values("'+req.body.descricao+'",'+req.body.data_criacao+','+req.body.data_evento+','+req.body.on_fire+')';
+		var string = 'insert into mensagem(descricao,data_criacao,data_evento,on_fire) values("'+req.body.descricao+'",now(),'+req.body.data_evento+','+req.body.on_fire+')';
 		console.log(string);		
 		connection.query(string , function(err, data) {
 		if (err){
