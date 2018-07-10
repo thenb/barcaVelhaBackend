@@ -108,9 +108,9 @@ app.post('/getAllEnquetes', function(req, res) {
 });
 
 //readMsg: Atualiza a mensagem como lida
-app.post('/readMsg', function(req, res) {
+app.post('/curtirMsg', function(req, res) {
 	pool.getConnection(function(err, connection) {
-		var string = 'insert into mensagem_x_usuario(id_usuario, id_mensagem) values('+req.body.id_usuario+','+req.body.id_mensagem+')';
+		var string = 'insert into mensagem_x_usuario(id_usuario, id_mensagem, curtido) values('+req.body.id_usuario+','+req.body.id_mensagem+','+req.body.curtido+')';
 		console.log(string);
 		connection.query(string , function(err, data) {
 		if (err){
@@ -195,6 +195,8 @@ app.post('/newMsg', function(req, res) {
 		});
 	});	
 });
+
+
 
 //configuracao para o heroku
 app.listen(process.env.PORT || 5000)
