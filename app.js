@@ -110,19 +110,39 @@ app.post('/getAllEnquetes', function(req, res) {
 //readMsg: Atualiza a mensagem como lida
 app.post('/curtirMsg', function(req, res) {
 	pool.getConnection(function(err, connection) {
-		var string = 'insert into mensagem_x_usuario(id_usuario, id_mensagem, curtido) values('+req.body.id_usuario+','+req.body.id_mensagem+','+req.body.curtido+')';
+		var string = 'select * from mensagem_x_usuario where id_usuario ='+req.body.id_usuario+' and id_mensagem = '+req.body.id_mensagem;
 		console.log(string);
 		connection.query(string , function(err, data) {
-		if (err){
-				var error = {};
-				error.type = 1;
-				error.msg = err;
-				connection.release();
-				return res.jsonp(error);
-			}
-			connection.release();
-			return res.jsonp("Mensagem_x_usuario Criada com sucesso");
-		});
+			if(data.length==0){
+				var string = 'insert into mensagem_x_usuario(id_usuario, id_mensagem, curtido) values('+req.body.id_usuario+','+req.body.id_mensagem+','+req.body.curtido+')';
+				console.log(string);
+				connection.query(string , function(err, data1) {
+				if (err){
+						var error = {};
+						error.type = 1;
+						error.msg = err;
+						connection.release();
+						return res.jsonp(error);
+					}
+					connection.release();
+					return res.jsonp("Mensagem_x_usuario Criada com sucesso");
+				});
+			}else{
+				var string = 'update mensagem_x_usuario set curtido ='+req.body.curtido+' where id_mensagem = '+req.body.id_mensagem+' and id_usuario = '+req.body.id_usuario;
+				console.log(string);
+				connection.query(string , function(err, data1) {
+				if (err){
+						var error = {};
+						error.type = 1;
+						error.msg = err;
+						connection.release();
+						return res.jsonp(error);
+					}
+					connection.release();
+					return res.jsonp("Mensagem_x_usuario Criada com sucesso");
+				});
+			}			
+		});	
 	});	
 });
 
