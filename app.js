@@ -168,16 +168,16 @@ app.post('/replayPoll', function(req, res) {
 //newPoll: Cria Nova Enquete
 app.post('/newPoll', function(req, res) {
 	pool.getConnection(function(err, connection) {
-		if(req.body.opcao_1==""){
+		if(req.body.opcao_1=="" || typeof req.body.opcao_1 == 'undefined'){
 			req.body.opcao_1 = null;
 		}
-		if(req.body.opcao_2==""){
+		if(req.body.opcao_2=="" || typeof req.body.opcao_2 == 'undefined'){
 			req.body.opcao_2 = null;
 		}
-		if(req.body.opcao_3==""){
+		if(req.body.opcao_3=="" || typeof req.body.opcao_3 == 'undefined'){
 			req.body.opcao_3 = null;
 		}
-		if(req.body.opcao_4==""){
+		if(req.body.opcao_4=="" || typeof req.body.opcao_4 == 'undefined'){
 			req.body.opcao_4 = null;
 		}
 		
@@ -202,8 +202,7 @@ app.post('/newMsg', function(req, res) {
 	pool.getConnection(function(err, connection) {
 		if(typeof req.body.on_fire == 'undefined'){
 			req.body.on_fire = false;
-		}
-		
+		}		
 		
 		var string = 'insert into mensagem(descricao,data_criacao,data_evento,on_fire) values("'+req.body.descricao+'",now(),"'+req.body.data_evento+'",'+req.body.on_fire+')';
 		console.log(string);		
