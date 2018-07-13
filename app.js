@@ -200,6 +200,11 @@ app.post('/newPoll', function(req, res) {
 //newMsg: Cria Nova Mensagem
 app.post('/newMsg', function(req, res) {
 	pool.getConnection(function(err, connection) {
+		if(typeof req.body.descricao == 'undefined'){
+			req.body.descricao = false;
+		}
+
+		
 		var string = 'insert into mensagem(descricao,data_criacao,data_evento,on_fire) values("'+req.body.descricao+'",now(),"'+req.body.data_evento+'",'+req.body.on_fire+')';
 		console.log(string);		
 		connection.query(string , function(err, data) {
