@@ -204,6 +204,8 @@ app.post('/newMsg', function(req, res) {
 			req.body.on_fire = false;
 		}
 		
+		
+		
 		var string = 'insert into mensagem(descricao,data_criacao,data_evento,on_fire) values("'+req.body.descricao+'",now(),"'+req.body.data_evento+'",'+req.body.on_fire+')';
 		console.log(string);		
 		connection.query(string , function(err, data) {
