@@ -72,7 +72,7 @@ app.post('/getId', function(req, res) {
 //getAllMsgs: Busca todas as mensagens
 app.post('/getAllMsgs', function(req, res) {	
 	pool.getConnection(function(err, connection) {	
-		var string = 'SELECT s.* FROM (SELECT * FROM mensagem LEFT JOIN mensagem_x_usuario  ON mensagem.id = mensagem_x_usuario.id_mensagem where mensagem_x_usuario.id_mensagem is null or mensagem_x_usuario.id_usuario = '+req.body.id_usuario+' UNION SELECT * FROM mensagem RIGHT JOIN mensagem_x_usuario ON mensagem.id = mensagem_x_usuario.id_mensagem where mensagem_x_usuario.id_mensagem is null or mensagem_x_usuario.id_usuario = '+req.body.id_usuario+') s order by s.data_criacao LIMIT 0,15';		
+		var string = 'SELECT s.* FROM (SELECT * FROM mensagem LEFT JOIN mensagem_x_usuario  ON mensagem.id = mensagem_x_usuario.id_mensagem where mensagem_x_usuario.id_mensagem is null or mensagem_x_usuario.id_usuario = '+req.body.id_usuario+' UNION SELECT * FROM mensagem RIGHT JOIN mensagem_x_usuario ON mensagem.id = mensagem_x_usuario.id_mensagem where mensagem_x_usuario.id_mensagem is null or mensagem_x_usuario.id_usuario = '+req.body.id_usuario+') s order by s.data_criacao desc LIMIT 0,15';		
 		console.log(string);
 		connection.query(string, function(err, data) {
 			if (err){
