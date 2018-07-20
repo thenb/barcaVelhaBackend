@@ -64,7 +64,7 @@ app.post('/getId', function(req, res) {
 					}
 					console.log(data1)
 					var registrationTokens = [req.body.token_firebase];
-					admin.messaging().subscribeToTopic(registrationTokens , topic)
+					admin.messaging().subscribeToTopic(registrationTokens , 'barca_velha')
 					  .then(function(response) {
 						// See the MessagingTopicManagementResponse reference documentation
 						// for the contents of response.
@@ -91,7 +91,7 @@ app.post('/getId', function(req, res) {
 					}
 					console.log(data2)
 					var registrationTokens = [req.body.token_firebase];
-					admin.messaging().subscribeToTopic(registrationTokens , topic)
+					admin.messaging().subscribeToTopic(registrationTokens , 'barca_velha')
 					  .then(function(response) {
 						// See the MessagingTopicManagementResponse reference documentation
 						// for the contents of response.
