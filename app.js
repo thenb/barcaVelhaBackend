@@ -24,7 +24,7 @@ app.use(busboy());
 
 //database
 var pool  = mysql.createPool({
-	connectionLimit : 20,
+	connectionLimit : 200,
 	host     : 'g8mh6ge01lu2z3n1.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
 	port : '3306',
 	user     : 'ghy6trmydb22z0e2',
@@ -234,14 +234,16 @@ app.post('/newPoll', function(req, res) {
 			// The topic name can be optionally prefixed with "/topics/".
 			var topic = 'barca_velha';
 
-			// See documentation on defining a message payload.
+			// See documentation on defining a message payload.	
 			var message = {
-			  data: {
-				score: '850',
-				time: '2:45'
+			  notification: {
+				title: 'Nova Mensagem',
+				body: 'Nova Mensagem 1'
 			  },
-			  topic: topic
+			   topic: topic
 			};
+
+			
 
 			// Send a message to devices subscribed to the provided topic.
 			admin.messaging().send(message)
@@ -283,11 +285,11 @@ app.post('/newMsg', function(req, res) {
 
 			// See documentation on defining a message payload.
 			var message = {
-			  data: {
-				score: '850',
-				time: '2:45'
+			  notification: {
+				title: 'Nova Mensagem',
+				body: 'Nova Mensagem 1'
 			  },
-			  topic: topic
+			   topic: topic
 			};
 
 			// Send a message to devices subscribed to the provided topic.
