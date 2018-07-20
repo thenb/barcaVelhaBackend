@@ -69,7 +69,7 @@ app.post('/getId', function(req, res) {
 				});
 			//ja existe, retorna o usuario completo
 			}else{
-				var string2 = 'update usuario set token_firebase = "'+req.body.token_firebase+'" where token = '+req.body.token;
+				var string2 = 'update usuario set token_firebase = "'+req.body.token_firebase+'" where token = "'+req.body.token+'"';
 				console.log(string2);
 				connection.query(string2 , function(err, data2) {
 					if (err){
