@@ -63,6 +63,16 @@ app.post('/getId', function(req, res) {
 						return res.jsonp(error);
 					}
 					console.log(data1)
+					var registrationTokens = [req.body.token_firebase];
+					admin.messaging().subscribeToTopic(registrationTokens , topic)
+					  .then(function(response) {
+						// See the MessagingTopicManagementResponse reference documentation
+						// for the contents of response.
+						console.log('Successfully subscribed to topic:', response);
+					  })
+					  .catch(function(error) {
+						console.log('Error subscribing to topic:', error);
+					  });
 					connection.release();
 					return res.json(data1);
 					//return res.jsonp(data1.token);
