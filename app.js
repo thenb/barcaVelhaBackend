@@ -237,8 +237,8 @@ app.post('/newPoll', function(req, res) {
 			// See documentation on defining a message payload.	
 			var message = {
 			  notification: {
-				title: 'Nova Mensagem',
-				body: 'Nova Mensagem 1'
+				title: 'Nova Enquete',
+				body: 'Nova enquete Marujo, clique aqui para visualizar.'
 			  },
 			   topic: topic
 			};
@@ -287,7 +287,7 @@ app.post('/newMsg', function(req, res) {
 			var message = {
 			  notification: {
 				title: 'Nova Mensagem',
-				body: 'Nova Mensagem 1'
+				body: 'Nova mensagem Marujo, clique aqui para visualizar.'
 			  },
 			   topic: topic
 			};
