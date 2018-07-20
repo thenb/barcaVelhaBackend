@@ -3,6 +3,14 @@ var bodyParser  = require('body-parser');
 var cors = require('cors');
 var busboy = require('connect-busboy');
 var mysql = require('mysql');
+var admin = require('firebase-admin');
+
+var serviceAccount = require('./firebase-config.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://barcavelha-3c454.firebaseio.com"
+});
 
 //bodyparser needs
 app.use(bodyParser.urlencoded({
@@ -44,7 +52,7 @@ app.post('/getId', function(req, res) {
 			}
 			//adiciona o id novo se ja nao existir
 			if (data === 'undefined'|| data.length == 0){				
-				var string1 = 'insert into usuario(token) values("'+req.body.token+'")';
+				var string1 = 'insert into usuario(token,token_firebase) values("'+req.body.token+',"'+req.body.token_firebase+'")';
 				console.log(string);
 				connection.query(string1 , function(err, data1) {
 					if (err){
@@ -61,6 +69,7 @@ app.post('/getId', function(req, res) {
 				});
 			//ja existe, retorna o usuario completo
 			}else{
+				var string2 = 'update usuario set token_firebase = "'+req.body.token_firebase+'" where token = '+req.body.token;
 				console.log(data)
 				connection.release();
 				return res.json(data);
