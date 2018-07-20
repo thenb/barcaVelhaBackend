@@ -231,6 +231,30 @@ app.post('/newPoll', function(req, res) {
 				connection.release();
 				return res.jsonp(error);
 			}
+			// The topic name can be optionally prefixed with "/topics/".
+			var topic = 'barca_velha';
+
+			// See documentation on defining a message payload.
+			var message = {
+			  data: {
+				score: '850',
+				time: '2:45'
+			  },
+			  topic: topic
+			};
+
+			// Send a message to devices subscribed to the provided topic.
+			admin.messaging().send(message)
+			  .then((response) => {
+				// Response is a message ID string.
+				console.log('Successfully sent message:', response);
+			  })
+			  .catch((error) => {
+				console.log('Error sending message:', error);
+			  });
+			
+			
+			
 			connection.release();
 			return res.jsonp("Enquete Criada com sucesso");
 		});
@@ -254,6 +278,27 @@ app.post('/newMsg', function(req, res) {
 				connection.release();
 				return res.jsonp(error);
 			}
+			// The topic name can be optionally prefixed with "/topics/".
+			var topic = 'barca_velha';
+
+			// See documentation on defining a message payload.
+			var message = {
+			  data: {
+				score: '850',
+				time: '2:45'
+			  },
+			  topic: topic
+			};
+
+			// Send a message to devices subscribed to the provided topic.
+			admin.messaging().send(message)
+			  .then((response) => {
+				// Response is a message ID string.
+				console.log('Successfully sent message:', response);
+			  })
+			  .catch((error) => {
+				console.log('Error sending message:', error);
+			  });
 			connection.release();
 			return res.jsonp("Mensagem Criada com sucesso");
 		});
