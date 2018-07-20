@@ -53,7 +53,7 @@ app.post('/getId', function(req, res) {
 			//adiciona o id novo se ja nao existir
 			if (data === 'undefined'|| data.length == 0){				
 				var string1 = 'insert into usuario(token,token_firebase) values("'+req.body.token+',"'+req.body.token_firebase+'")';
-				console.log(string);
+				console.log(string1);
 				connection.query(string1 , function(err, data1) {
 					if (err){
 						var error = {};
@@ -70,9 +70,20 @@ app.post('/getId', function(req, res) {
 			//ja existe, retorna o usuario completo
 			}else{
 				var string2 = 'update usuario set token_firebase = "'+req.body.token_firebase+'" where token = '+req.body.token;
-				console.log(data)
-				connection.release();
-				return res.json(data);
+				console.log(string2);
+				connection.query(string2 , function(err, data2) {
+					if (err){
+						var error = {};
+						error.type = 1;
+						error.msg = err;
+						connection.release();
+						return res.jsonp(error);
+					}
+					console.log(data2)
+					connection.release();
+					return res.json(data2);
+					//return res.jsonp(data1.token);
+				});
 			}			
 		});
 	});	
