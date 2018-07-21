@@ -52,7 +52,7 @@ app.post('/getId', function(req, res) {
 			}
 			//adiciona o id novo se ja nao existir
 			if (data === 'undefined'|| data.length == 0){				
-				var string1 = 'insert into usuario(token,token_firebase) values("'+req.body.token+',"'+req.body.token_firebase+'")';
+				var string1 = 'insert into usuario(token,token_firebase) values("'+req.body.token+'","'+req.body.token_firebase+'")';
 				console.log(string1);
 				connection.query(string1 , function(err, data1) {
 					if (err){
@@ -62,9 +62,9 @@ app.post('/getId', function(req, res) {
 						connection.release();
 						return res.jsonp(error);
 					}
-					console.log(data1)
+					console.log(data1);
 					var registrationTokens = [req.body.token_firebase];
-					admin.messaging().subscribeToTopic(registrationTokens , 'barca_velha')
+					admin.messaging().subscribeToTopic(registrationTokens , 'borra_do_ano')
 					  .then(function(response) {
 						// See the MessagingTopicManagementResponse reference documentation
 						// for the contents of response.
@@ -73,9 +73,20 @@ app.post('/getId', function(req, res) {
 					  .catch(function(error) {
 						console.log('Error subscribing to topic:', error);
 					  });
-					connection.release();
-					return res.json(data1);
-					//return res.jsonp(data1.token);
+					  
+					var string3 = 'select * from usuario where token = "'+req.body.token+'"';
+					console.log(string3);
+					connection.query(string3 , function(err, data3) {
+						if (err){
+							var error = {};
+							error.type = 1;
+							error.msg = err;
+							connection.release();
+							return res.jsonp(error);
+						}
+						connection.release();
+						return res.jsonp(data3);
+					});	
 				});
 			//ja existe, retorna o usuario completo
 			}else{
@@ -91,7 +102,7 @@ app.post('/getId', function(req, res) {
 					}
 					console.log(data2)
 					var registrationTokens = [req.body.token_firebase];
-					admin.messaging().subscribeToTopic(registrationTokens , 'barca_velha')
+					admin.messaging().subscribeToTopic(registrationTokens , 'borra_do_ano')
 					  .then(function(response) {
 						// See the MessagingTopicManagementResponse reference documentation
 						// for the contents of response.
@@ -100,9 +111,20 @@ app.post('/getId', function(req, res) {
 					  .catch(function(error) {
 						console.log('Error subscribing to topic:', error);
 					  });
-					connection.release();
-					return res.json(data2);
-					//return res.jsonp(data1.token);
+					  
+					var string4 = 'select * from usuario where token = "'+req.body.token+'"';
+					console.log(string4);
+					connection.query(string4 , function(err, data4) {
+						if (err){
+							var error = {};
+							error.type = 1;
+							error.msg = err;
+							connection.release();
+							return res.jsonp(error);
+						}
+						connection.release();
+						return res.jsonp(data4);
+					});	
 				});
 			}			
 		});
