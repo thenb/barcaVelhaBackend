@@ -186,8 +186,24 @@ app.post('/curtirMsg', function(req, res) {
 						connection.release();
 						return res.jsonp(error);
 					}
-					connection.release();
-					return res.jsonp("Mensagem_x_usuario Criada com sucesso");
+					var string_curtida = ""
+					if(req.body.curtido){
+						string_curtida = 'update mensagem set qtd_curtidas = qtd_curtidas+1 where id = '+req.body.id_mensagem;
+					}else{
+						string_curtida = 'update mensagem set qtd_curtidas = qtd_curtidas-1 where id = '+req.body.id_mensagem;
+					}					
+					console.log(string_curtida);
+					connection.query(string_curtida , function(err, data1) {
+					if (err){
+							var error = {};
+							error.type = 1;
+							error.msg = err;
+							connection.release();
+							return res.jsonp(error);
+						}
+						connection.release();
+						return res.jsonp("Mensagem_x_usuario Criada com sucesso");
+					});				
 				});
 			}else{
 				var string = 'update mensagem_x_usuario set curtido ='+req.body.curtido+' where id_mensagem = '+req.body.id_mensagem+' and id_usuario = '+req.body.id_usuario;
@@ -200,8 +216,24 @@ app.post('/curtirMsg', function(req, res) {
 						connection.release();
 						return res.jsonp(error);
 					}
-					connection.release();
-					return res.jsonp("Mensagem_x_usuario Criada com sucesso");
+					var string_curtida = ""
+					if(req.body.curtido){
+						string_curtida = 'update mensagem set qtd_curtidas = qtd_curtidas+1 where id = '+req.body.id_mensagem;
+					}else{
+						string_curtida = 'update mensagem set qtd_curtidas = qtd_curtidas-1 where id = '+req.body.id_mensagem;
+					}					
+					console.log(string_curtida);
+					connection.query(string_curtida , function(err, data1) {
+					if (err){
+							var error = {};
+							error.type = 1;
+							error.msg = err;
+							connection.release();
+							return res.jsonp(error);
+						}
+						connection.release();
+						return res.jsonp("Mensagem_x_usuario Criada com sucesso");
+					});	
 				});
 			}			
 		});	
