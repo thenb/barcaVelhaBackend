@@ -134,7 +134,7 @@ app.post('/getId', function(req, res) {
 //getAllMsgs: Busca todas as mensagens
 app.post('/getAllMsgs', function(req, res) {	
 	pool.getConnection(function(err, connection) {	
-		var string = 'SELECT s.*, COUNT(m.id_mensagem) as curtidas FROM (SELECT  m.*, curtido FROM mensagem m LEFT JOIN mensagem_x_usuario  ON m.id = mensagem_x_usuario.id_mensagem AND mensagem_x_usuario.id_usuario = 157) s LEFT JOIN mensagem_x_usuario m  ON s.id = m.id_mensagem WHERE m.curtido = 1 GROUP BY s.id ORDER BY s.data_criacao desc LIMIT 0,15';		
+		var string = 'SELECT s.* FROM (SELECT * FROM mensagem LEFT JOIN mensagem_x_usuario  ON mensagem.id = mensagem_x_usuario.id_mensagem where mensagem_x_usuario.id_mensagem is null or mensagem_x_usuario.id_usuario = '+req.body.id_usuario+' UNION SELECT * FROM mensagem RIGHT JOIN mensagem_x_usuario ON mensagem.id = mensagem_x_usuario.id_mensagem where mensagem_x_usuario.id_mensagem is null or mensagem_x_usuario.id_usuario = '+req.body.id_usuario+') s order by s.data_criacao desc LIMIT 0,15';
 		console.log(string);
 		connection.query(string, function(err, data) {
 			if (err){
