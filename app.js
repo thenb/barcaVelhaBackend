@@ -134,7 +134,7 @@ app.post('/getId', function(req, res) {
 //getAllMsgs: Busca todas as mensagens
 app.post('/getAllMsgs', function(req, res) {	
 	pool.getConnection(function(err, connection) {
-		var string = 'select m.*, (select curtido from mensagem_x_usuario where id_usuario = '+req.body.id_usuario+' and id_mensagem = m.id) as curtido   from mensagem as m';
+		var string = 'select m.*, (select curtido from mensagem_x_usuario where id_usuario = '+req.body.id_usuario+' and id_mensagem = m.id) as curtido from mensagem as m order by m.data_criacao desc';
 		console.log(string);
 		connection.query(string, function(err, data) {
 			if (err){
