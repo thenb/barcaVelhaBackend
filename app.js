@@ -435,6 +435,25 @@ client.on("join", function (canal, username, self) {
 
 client.on("part", function (channel, username, self) {
     send_online_push = true;
+	var topic = 'barca_velha';
+	// See documentation on defining a message payload.
+	var message = {
+	  notification: {
+		title: 'Gratis150ml saiu',
+		body: 'Estou Online Marujos!!!!!!'
+	  },
+	   topic: topic
+	};
+	// Send a message to devices subscribed to the provided topic.
+	admin.messaging().send(message)
+	  .then((response) => {
+		// Response is a message ID string.
+		console.log('Successfully sent message:', response);
+	  })
+	  .catch((error) => {
+		console.log('Error sending message:', error);
+	  });
+	}
 });
 
 
