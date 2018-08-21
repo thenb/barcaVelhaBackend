@@ -4,6 +4,27 @@ var cors = require('cors');
 var busboy = require('connect-busboy');
 var mysql = require('mysql');
 var admin = require('firebase-admin');
+var tmi = require('tmi.js');
+
+
+
+var options = {
+    options:{
+        debug: true
+    },
+    connection: {
+        cluster: "aws",
+        reconnect: true
+    },
+    identity:{
+        username: "gratisml",
+        password: "oauth:6rsgyzv3lx9r6og3nwkup3togmmtau"
+    },
+    channels: ["gratis150ml"]
+};
+
+var client = new tmi.client(options);
+client.connect();
 
 var serviceAccount = require('./firebase-config.json');
 
@@ -153,7 +174,6 @@ app.post('/getAllMsgs', function(req, res) {
 //getAllEnquetes: Busca todas as enquetes
 app.post('/getAllEnquetes', function(req, res) {	
 	pool.getConnection(function(err, connection) {	
-		//var string = 'SELECT s.*, (select e.opcao_1_qtd from enquete as e where e.id = s.id) as opcao_1_qtd,(select e.opcao_2_qtd from enquete as e where e.id = s.id) as opcao_2_qtd,(select e.opcao_3_qtd from enquete as e where e.id = s.id) as opcao_3_qtd,(select e.opcao_4_qtd from enquete as e where e.id = s.id) as opcao_4_qtd  FROM (SELECT * FROM enquete LEFT JOIN enquete_x_usuario  ON enquete.id = enquete_x_usuario.id_enquete where enquete_x_usuario.id_enquete is null or enquete_x_usuario.id_usuario = '+req.body.id_usuario+' UNION SELECT * FROM enquete RIGHT JOIN enquete_x_usuario ON enquete.id = enquete_x_usuario.id_enquete where enquete_x_usuario.id_enquete is null or enquete_x_usuario.id_usuario = '+req.body.id_usuario+' ) s ORDER BY s.respondido asc, s.data_criacao desc  LIMIT 0,15';
 		var string = 'SELECT s.*, (select resposta from enquete_x_usuario where id_usuario = '+req.body.id_usuario+' and id_enquete = s.id) as resposta, (select respondido from enquete_x_usuario where id_usuario = '+req.body.id_usuario+' and id_enquete = s.id) as respondido FROM enquete as s ORDER BY s.data_criacao desc  LIMIT 0,15';
 		
 		console.log(string);
@@ -382,6 +402,42 @@ app.post('/newMsg', function(req, res) {
 		});
 	});	
 });
+
+
+var canal = 'gratis150ml';
+var username = 'gratis150ml';
+var self = true;
+var send_online_push = true;
+
+client.on("join", function (canal, username, self) {
+    if(send_online_push){
+	var topic = 'barca_velha';
+	// See documentation on defining a message payload.
+	var message = {
+	  notification: {
+		title: 'Gratis150ml Online',
+		body: 'Estou Online Marujos!!!!!!'
+	  },
+	   topic: topic
+	};
+	// Send a message to devices subscribed to the provided topic.
+	admin.messaging().send(message)
+	  .then((response) => {
+		// Response is a message ID string.
+		console.log('Successfully sent message:', response);
+	  })
+	  .catch((error) => {
+		console.log('Error sending message:', error);
+	  });
+	}
+	send_online_push = false;	
+});
+
+client.on("part", function (channel, username, self) {
+    send_online_push = true;
+});
+
+
 
 
 

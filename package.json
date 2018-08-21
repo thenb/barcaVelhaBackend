@@ -9,7 +9,8 @@
     "cors": "^2.8.3",
     "express": "^4.15.2",
     "firebase-admin": "^5.13.0",
-    "mysql": "^2.15.0"
+    "mysql": "^2.15.0",
+    "tmi.js": "^1.2.1"
   },
   "devDependencies": {},
   "scripts": {
