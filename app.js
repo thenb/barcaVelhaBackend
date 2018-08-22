@@ -5,26 +5,12 @@ var busboy = require('connect-busboy');
 var mysql = require('mysql');
 var admin = require('firebase-admin');
 var tmi = require('tmi.js');
+var CronJob = require('cron').CronJob;
 
 
 
-var options = {
-    options:{
-        debug: true
-    },
-    connection: {
-        cluster: "aws",
-        reconnect: true
-    },
-    identity:{
-        username: "gratisml",
-        password: "oauth:6rsgyzv3lx9r6og3nwkup3togmmtau"
-    },
-    channels: ["gratis150ml"]
-};
 
-var client = new tmi.client(options);
-client.connect();
+
 
 var serviceAccount = require('./firebase-config.json');
 
@@ -404,6 +390,27 @@ app.post('/newMsg', function(req, res) {
 });
 
 
+var options = {
+    options:{
+        debug: false
+    },
+    connection: {
+        cluster: "aws",
+        reconnect: false
+    },
+    identity:{
+        username: "gratisml",
+        password: "oauth:6rsgyzv3lx9r6og3nwkup3togmmtau"
+    },
+    channels: ["gratis150ml"]
+};
+
+//Configuracoes para o bot
+/*
+var client = new tmi.client(options);
+client.connect();
+
+
 var canal = 'gratis150ml';
 var username = 'gratis150ml';
 var self = true;
@@ -411,8 +418,8 @@ var send_online_push = true;
 
 client.on("join", function (canal, username, self) {
     if(send_online_push){
-	var topic = 'barca_velha';
-	// See documentation on defining a message payload.
+		console.log('Estou OnlineEEEEEEEEEEEEEEEEEEEEEEEE')
+	var topic = 'barca_velha';	
 	var message = {
 	  notification: {
 		title: 'Gratis150ml Online',
@@ -420,10 +427,10 @@ client.on("join", function (canal, username, self) {
 	  },
 	   topic: topic
 	};
-	// Send a message to devices subscribed to the provided topic.
+	
 	admin.messaging().send(message)
 	  .then((response) => {
-		// Response is a message ID string.
+
 		console.log('Successfully sent message:', response);
 	  })
 	  .catch((error) => {
@@ -435,26 +442,61 @@ client.on("join", function (canal, username, self) {
 
 client.on("part", function (channel, username, self) {
     send_online_push = true;
-	var topic = 'barca_velha';
-	// See documentation on defining a message payload.
-	var message = {
-	  notification: {
-		title: 'Gratis150ml saiu',
-		body: 'Estou Online Marujos!!!!!!'
-	  },
-	   topic: topic
-	};
-	// Send a message to devices subscribed to the provided topic.
-	admin.messaging().send(message)
-	  .then((response) => {
-		// Response is a message ID string.
-		console.log('Successfully sent message:', response);
-	  })
-	  .catch((error) => {
-		console.log('Error sending message:', error);
-	  });
+	console.log("Saiu Gratis");
+});*/
+
+
+
+const request = require('request');
+var send_push_online = true;
+
+function callback(error, response, body) {
+  if (!error && response.statusCode == 200) {
+	var info = JSON.parse(body);	
+	if(info.stream==='null'){
+		send_push_online = true
+	}else{
+		if(send_push_online){
+			//chama a push
+			var topic = 'barca_velha';	
+			var message = {
+			  notification: {
+				title: 'Barca Velha ',
+				body: 'Estou Online Marujos!!!!!!'
+			  },
+			   topic: topic
+			};			
+			admin.messaging().send(message)
+			.then((response) => {
+
+			console.log('Successfully sent message:', response);
+			})
+			.catch((error) => {
+			console.log('Error sending message:', error);
+			});
+			send_push_online = false;
+		}
 	}
+	
+  }
+}
+
+var aniversarioCliente = new CronJob({
+  cronTime: '120 * * * * *',
+  onTick: function() {
+	var options = {
+	  url: 'https://api.twitch.tv/kraken/streams/gratis150ml',
+	  headers: {
+		'Client-Id': '67lx0lep7n77mav8o20ncg1sch26ke'
+	  }
+	};	
+	request(options, callback);	
+  },
+  start: false,
+  timeZone: 'America/Sao_Paulo'
 });
+
+aniversarioCliente.start();
 
 
 
